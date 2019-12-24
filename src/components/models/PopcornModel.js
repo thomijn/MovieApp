@@ -1,30 +1,34 @@
-import React, { useRef, useState, useEffect } from 'react';
-import { useSpring, a, config } from "react-spring/three"
+import React, { useState, useEffect, useRef } from 'react';
+import { useFrame } from "react-three-fiber"
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
+import { useStore } from "../../store"
 
-const Popcorn = ({ position, rotation, scale }) => {
-
+const Popcorn = ({ position, rotation, movie }) => {
+    const setSelectedMovie = useStore(state => state.setSelectedMovie)
     const [hover, set] = useState(false)
-    const props = useSpring({
-        from: {
-            position: [0.5, 0.5, 0.5]
-        },
-        scale: hover ? [0.9, 0.9, 0.9] : [0.8, 0.8, 0.8],
-        config: config.wobbly
-    })
+
+
     const [model, setModel] = useState()
     useEffect(() => {
         new GLTFLoader().load('/popcorn/scene.gltf', setModel)
     }, [])
 
+    const ref = useRef()
+    useFrame(() => {
+        if (ref.current) {
+            let scale = (ref.current.scale.x += ((hover ? 1 : 0.8) - ref.current.scale.x) * 0.1)
+            ref.current.scale.set(scale, scale, scale)
+        }
+    })
+
     return (
-        model ? <a.primitive
-            onClick={() => console.log("clocked")}
+        model ? <primitive
+            ref={ref}
+            onClick={() => setSelectedMovie(movie)}
             rotation={rotation}
             onPointerOver={() => set(true)}
             onPointerOut={() => set(false)}
             object={model.scene}
-            scale={props.scale}
             position={position} /> : null
     )
 }

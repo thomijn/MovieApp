@@ -9,7 +9,6 @@ const Bucket = () => {
 
     return (
         model ? <primitive
-            castShadow
             rotation={[0.3, 10, 0.2]}
             object={model.scene}
             scale={[0.1, 0.1, 0.1]}
