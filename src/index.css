@@ -1,15 +1,23 @@
-html,
+
+canvas {
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  z-index: -1 ;
+}
+
 body {
-  height: 100%;
-  width: 100%;
+  background: rgb(129,22,12);
+  background: radial-gradient(circle, rgba(129,22,12,1) 0%, rgba(0,0,0,1) 44%, rgba(0,0,0,1) 72%, rgba(0,0,0,1) 100%);
+  background-repeat: no-repeat;
+  background-size: cover;
   margin: 0;
   padding: 0;
 }
 
-canvas {
-  position: relative;
-  height: 100%;
-  width: 100%;
-  margin: 0;
-  padding: 0;
+#root {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
 }
