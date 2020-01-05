@@ -1,7 +1,7 @@
 import React from 'react'
 import { Grid, Typography, makeStyles } from '@material-ui/core'
 import { a, config, useSpring } from "react-spring"
-import { useStore } from "../../store"
+import { useHomeStore } from "../../store"
 
 const styles = makeStyles({
     container: {
@@ -19,7 +19,7 @@ const styles = makeStyles({
 
 
 const Title = () => {
-    const selectedMovie = useStore(state => state.selectedMovie)
+    const selectedMovie = useHomeStore(state => state.selectedMovie)
     const classes = styles()
     const props = useSpring({
         from: {

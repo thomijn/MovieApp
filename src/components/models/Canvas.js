@@ -25,7 +25,7 @@ const CanvasModel = ({ movies }) => {
                 {movies.map(movie => <Popcorn
                     key={movie._id}
                     movie={movie}
-                    position={[Math.random() * 5, Math.random() * 5, Math.random() * 2]}
+                    position={[Math.random() * 5, Math.random() * 5, Math.random() * 5 - 3]}
                     rotation={[Math.random() * 2, Math.random() * 2, Math.random() * 2]}
                     scale={[Math.random(), Math.random(), Math.random()]}
                 />)}

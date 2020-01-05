@@ -1,9 +1,10 @@
-import React from 'react'
-import { Card, Typography, Grid, makeStyles, CardContent, CardMedia, CardActions, IconButton } from '@material-ui/core';
+import React, { useEffect } from 'react'
+import { Card, Typography, Grid, makeStyles, CardContent, CardHeader, Button, IconButton } from '@material-ui/core';
 import { FaTimes } from 'react-icons/fa';
-
-import { useStore } from "../../store"
+import { Link, useParams } from "react-router-dom"
 import { useSpring, a, config } from 'react-spring';
+import axios from 'axios';
+import { toast } from "react-toastify"
 
 const styles = makeStyles({
     container: {
@@ -17,27 +18,60 @@ const styles = makeStyles({
         height: "225px",
         opacity: "0.9"
     },
+    link: {
+        color: "#fff",
+        textAlign: "center"
+    }
 });
 
-export const MovieDetailComponent = () => {
+export const MovieDetailComponent = ({ setSelectedMovie, selectedMovie }) => {
     const classes = styles()
-    const selectedMovie = useStore(state => state.selectedMovie)
-    const setSelectedMovie = useStore(state => state.setSelectedMovie)
     const props = useSpring({
         opacity: !selectedMovie ? 0 : 1,
         config: config.slow
     })
+    const buttonAnimated = useSpring({
+        opacity: selectedMovie ? 0 : 1,
+        config: config.slow
+    })
+    const { id } = useParams()
+
+    useEffect(() => {
+        if (id) {
+            getMovie(`http://78.141.212.87:8000/movies/${id}`)
+        }
+
+    }, [id])
+
+    const getMovie = async (url) => {
+        try {
+            const response = await axios.get(url)
+            setSelectedMovie(response.data)
+        } catch (error) {
+            toast.error("Something went wrong")
+        }
+    }
+
     return (
         <Grid justify="center" container>
+            <Grid item xs={6} className={classes.container}>
+                <a.div style={buttonAnimated} >
+                    <Button>
+                        <Link style={{ textDecoration: "none", fontFamily: "Josefin Sans" }} to="/overview">
+                            <Typography className={classes.link} variant="body1">Show all movies</Typography>
+                        </Link>
+                    </Button>
+                </a.div>
+            </Grid>
             {selectedMovie &&
                 <Grid className={classes.container} item xs={6}>
                     <a.div style={props}>
                         <Card className={classes.card} elevation={4}>
                             <Grid container alignItems="center">
                                 <Grid item xs={3}>
-                                    <img src={`http://img.omdbapi.com/?apikey=d2962e67&i=${selectedMovie.imdbId}`} height="225" width="auto" />
+                                    <img src={`http://img.omdbapi.com/?apikey=d2962e67&i=${selectedMovie.imdbId}`} alt="movie poster" height="225" width="auto" />
                                 </Grid>
-                                <Grid item xs={9}>
+                                <Grid item xs={8}>
                                     <CardContent>
                                         <Grid container>
                                             <Grid item xs={8}>
@@ -51,18 +85,22 @@ export const MovieDetailComponent = () => {
                                                     {selectedMovie.year}
                                                 </Typography>
                                             </Grid>
-                                            <Grid item xs={4}>
+                                            <Grid item xs={3}>
                                                 <Typography variant="h3">
                                                     {selectedMovie.rating}
                                                 </Typography>
-
-
                                             </Grid>
                                         </Grid>
                                     </CardContent>
-                                    <IconButton style={{ position: "absolute", top: "0.5em", right: "0.5em" }} aria-label="add to favorites">
-                                        <FaTimes onClick={() => setSelectedMovie(undefined)} />
-                                    </IconButton>
+                                </Grid>
+                                <Grid item xs={1}>
+                                    <CardHeader
+                                        action={
+                                            <IconButton onClick={() => setSelectedMovie(undefined)} aria-label="settings">
+                                                <FaTimes />
+                                            </IconButton>
+                                        }
+                                    />
                                 </Grid>
                             </Grid>
                         </Card>
